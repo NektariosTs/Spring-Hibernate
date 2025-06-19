@@ -4,6 +4,7 @@ package com.nekta.cruddemo.dao;
 import com.nekta.cruddemo.entity.Course;
 import com.nekta.cruddemo.entity.Instructor;
 import com.nekta.cruddemo.entity.InstructorDetail;
+import com.nekta.cruddemo.entity.Student;
 
 import java.util.List;
 
@@ -36,5 +37,11 @@ public interface AppDAO {
     Course findCourseAndReviewsByCourseId(int theId);
 
     Course findCourseAndStudentsByCourseId(int theId);
+
+    Student findStudentCoursesByStudentId(int theId);
+
+    void update(Student tempStudent);
+
+    void deleteStudentById(int theId);
 
 }

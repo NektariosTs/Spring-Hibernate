@@ -3,6 +3,7 @@ package com.nekta.cruddemo.dao;
 import com.nekta.cruddemo.entity.Course;
 import com.nekta.cruddemo.entity.Instructor;
 import com.nekta.cruddemo.entity.InstructorDetail;
+import com.nekta.cruddemo.entity.Student;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -167,6 +168,52 @@ public class AppDAOImpl implements AppDAO {
         Course course = query.getSingleResult();
 
         return course;
+    }
+
+    @Override
+    public Student findStudentCoursesByStudentId(int theId) {
+
+        //create query
+        TypedQuery<Student> query = entityManager.createQuery(
+                "select s from Student s "
+                        + "JOIN FETCH s.courses "
+                        + "where s.id = :data", Student.class);
+        query.setParameter("data", theId);
+
+        //execute query
+        Student student = query.getSingleResult();
+
+        return student;
+    }
+
+    @Override
+    @Transactional
+    public void update(Student tempStudent) {
+        entityManager.merge(tempStudent);
+    }
+
+    @Override
+    @Transactional
+    public void deleteStudentById(int theId) {
+
+        //find the student
+        Student tempStudent = entityManager.find(Student.class, theId);
+
+        if (tempStudent != null) {
+
+
+            //get the courses
+            List<Course> courses = tempStudent.getCourses();
+
+            //break association of all courses for the student
+            for (Course tempCourse : courses) {
+                tempCourse.getStudents().remove(tempStudent);
+            }
+
+            //Now delete the student
+            entityManager.remove(tempStudent);
+        }
+
     }
 }
 
