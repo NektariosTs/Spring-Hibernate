@@ -22,9 +22,34 @@ public class AopdemoApplication {
         return runner -> {
 
 //
-            demeTheAfterReturnigAdvice(theAccountDAO);
+//            demeTheAfterReturnigAdvice(theAccountDAO);
+            demoTheAfterThrowingAdvice(theAccountDAO);
 
         };
+    }
+
+    private void demoTheAfterThrowingAdvice(AccountDAO theAccountDAO) {
+        //call method to find the accounts
+        List<Account> theAccounts = null;
+
+        try {
+            //add a boolean flag to simulate the exceptions
+            boolean tripWire = true;
+           theAccounts = theAccountDAO.findAccounts(tripWire);
+
+        }
+        catch (Exception e) {
+            System.out.println("\n\n Main Program:... caught exception: " + e);
+        }
+
+
+        //display the accounts
+        System.out.println("\n\n Main Program demoTheAfterThrowingAdvice:");
+        System.out.println("----");
+
+        System.out.println(theAccounts);
+
+        System.out.println("\n");
     }
 
     private void demeTheAfterReturnigAdvice(AccountDAO theAccountDAO) {
@@ -32,6 +57,7 @@ public class AopdemoApplication {
         //call method to find the accounts
         List<Account> theAccounts = theAccountDAO.findAccounts();
 
+        //display the accounts
         System.out.println("\n\n Main Program demeTheAfterReturnigAdvice:");
         System.out.println("----");
 

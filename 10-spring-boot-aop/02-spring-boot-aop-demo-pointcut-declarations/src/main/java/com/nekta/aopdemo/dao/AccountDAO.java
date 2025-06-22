@@ -10,6 +10,8 @@ public interface AccountDAO {
 
     List<Account> findAccounts();
 
+    List<Account> findAccounts(boolean tripWire);
+
 
     void addAccount(Account theAccount, boolean vipFlag);
 
@@ -25,5 +27,6 @@ public interface AccountDAO {
 
 
     public void setServiceCode(String serviceCode);
+
 
 }
