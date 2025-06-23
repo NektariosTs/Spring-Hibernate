@@ -2,10 +2,8 @@ package com.nekta.aopdemo.aspect;
 
 import com.nekta.aopdemo.Account;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.AfterThrowing;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -16,6 +14,53 @@ import java.util.List;
 @Component
 @Order(2)
 public class MyDemoLoggingAspect {
+
+    @Around("execution(* com.nekta.aopdemo.service.*.getFortune(..))")
+    public Object aroundGetFortune(
+            ProceedingJoinPoint theProceedingJoinPoint) throws Throwable {
+
+        //print out method we are advising on
+        String method = theProceedingJoinPoint.getSignature().toShortString();
+        System.out.println("\n====>>> Executing @Around on method: " + method);
+
+        //get begin timestamp
+        //long begin = System.currentTimeMillis();
+        long begin = System.nanoTime();
+
+        //now, lets execute the method
+        Object result = null;
+
+        try {
+            theProceedingJoinPoint.proceed();
+        }
+        catch (Exception exc) {
+            //log the exception
+            System.out.println(exc.getMessage());
+
+            //give user a custom message
+            result = "Major accident! But no worries, your private AOP helicopter is on the way";
+        }
+
+        //get end timestamp
+        //long end = System.currentTimeMillis();
+        long end = System.nanoTime();
+
+        //compute duration and display it
+        long duration = end - begin;
+        System.out.println("\n ======> Duration: " + duration + "nanoseconds");
+
+        return result;
+    }
+
+    @After("execution(* com.nekta.aopdemo.dao.AccountDAO.findAccounts(..))")
+    public void afterFinallyFindAccountsAdvice(JoinPoint theJoinPoint) {
+
+        //print out which method we are advising on
+        String method = theJoinPoint.getSignature().toShortString();
+        System.out.println("\n====>>> Executing @After (finally) on method: " + method);
+
+
+    }
 
     @AfterThrowing(
             pointcut = "execution(* com.nekta.aopdemo.dao.AccountDAO.findAccounts(..))",
